@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Documentation added
+
 ## 0.2.0
 
 * README.md updated

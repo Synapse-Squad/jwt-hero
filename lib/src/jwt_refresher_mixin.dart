@@ -5,6 +5,7 @@ import 'jwt_token.dart';
 import 'refresh_typedef.dart';
 import 'revoke_token_exception.dart';
 
+/// {@template jwt_refresher_mixin}
 /// A mixin responsible for refreshing JWT tokens.
 ///
 /// This mixin provides the functionality to refresh JWT tokens when they
@@ -14,10 +15,8 @@ import 'revoke_token_exception.dart';
 ///
 /// The mixin is intended to be used with classes that manage HTTP requests
 /// and need to handle JWT token expiration and refresh automatically.
-
+/// {@endtemplate}
 mixin JwtRefresherMixin {
-
-  /// Refreshes the JWT token. 
   Future<JwtToken> refresh({
     required RequestOptions options,
     JwtToken? currentJwtToken,

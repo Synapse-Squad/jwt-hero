@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+/// {@template request_retry_mixin}
 /// A mixin in charge of retrying the request with the new JWT token.
 ///
 /// This mixin provides the functionality to retry HTTP requests with a new
@@ -9,11 +10,8 @@ import 'package:dio/dio.dart';
 ///
 /// The mixin is intended to be used with classes that manage HTTP requests
 /// and need to handle automatic retries with refreshed JWT tokens.
-
+/// {@endtemplate}
 mixin RequestRetryMixin {
-
-
-  /// Retries the request with the new JWT token.
   Future<Response<R>> retry<R>({
     required Dio retryClient,
     required RequestOptions requestOptions,

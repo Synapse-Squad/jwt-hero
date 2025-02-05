@@ -3,14 +3,14 @@ import 'dart:async';
 /// The session status enum.
 enum SessionStatus { active, expired }
 
+/// {@template session_manager}
 /// Manages the session status of the user.
 ///
 /// The `SessionExpirationManager` class is responsible for managing the session
 /// status of the user. It uses a stream to broadcast session status changes,
 /// allowing other parts of the application to listen for and react to these changes.
-
-class SessionExpirationManager {
-
+/// {@endtemplate}
+class SessionManager {
   /// The stream controller to manage the session status.
   final _sessionController = StreamController<SessionStatus>.broadcast()
     ..add(SessionStatus.active);

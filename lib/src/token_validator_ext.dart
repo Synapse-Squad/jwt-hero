@@ -4,10 +4,8 @@ import 'jwt_token.dart';
 
 /// Extension methods for the [JwtToken] class.
 extension TokenValidatorExt on JwtToken {
-
-  /// Returns `true` if the access token is valid.  
+  /// Returns `true` if the access token is valid.
   bool get isValid {
-
     /// Decode the access token.
     final decodedJwt = JWT.decode(accessToken);
 

@@ -12,9 +12,14 @@ enum _TokenKey {
   final String key;
 }
 
+/// {@template secure_token_storage}
+/// A secure implementation of [TokenStorage] that uses [FlutterSecureStorage].
+/// {@endtemplate}
 final class SecureTokenStorage implements TokenStorage {
+  /// {@macro secure_token_storage}
   const SecureTokenStorage(this.secureStorage);
 
+  /// The secure storage to store the JWT token.
   final FlutterSecureStorage secureStorage;
 
   @override

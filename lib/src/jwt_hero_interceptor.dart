@@ -26,7 +26,7 @@ import 'token_validator_ext.dart';
 /// - [RequestRetryMixin]: Provides functionality to retry requests.
 /// {@endtemplate}
 class JwtHeroInterceptor extends QueuedInterceptor
-    with JwtRefresherMixin, RequestRetryMixin {
+    with JwtRefresherMixin, RequestRetryMixin<Response<dynamic>> {
   /// {@macro jwt_hero_interceptor}
   JwtHeroInterceptor({
     this.tokenStorage = const SecureTokenStorage(FlutterSecureStorage()),
@@ -104,7 +104,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
       }
 
       return handler.reject(error);
-    } catch (error) {
+    } on Exception {
       /// If an error occurs, continue with the request.
       /// This is to prevent the request from being rejected.
       /// The error will be handled in the onError method.
@@ -175,7 +175,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
   }
 
   /// Builds the headers with the JWT token.
-  Future<Map<String, dynamic>> _buildHeaders() async {
+  Future<Map<String, String>> _buildHeaders() async {
     final jwtToken = await tokenStorage.loadToken();
 
     return {

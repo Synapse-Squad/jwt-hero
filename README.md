@@ -2,17 +2,6 @@
 
 JWT Hero is a Dart package that provides an easy way to handle JWT token management, including token validation, refresh, and retrying failed requests. This package is designed to work seamlessly with the Dio HTTP client.
 
-## Installation
-
-Add `jwt_hero` to your `pubspec.yaml` file:
-
-```yaml
-dependencies:
-  jwt_hero: ^0.1.0
-```
-
-Then, run flutter pub get to install the package.
-
 ## Setting Up
 
 To use **JwtHeroInterceptor**, you need to set up a few components:
@@ -123,6 +112,19 @@ create an instance of **JwtHeroInterceptor**:
 You can inject **SessionManager** to your classes using Dependency Injection (DI) 
 to listen **sessionStatus**. And if user login/register successfully, we should call 
 **sessionManager.startSession()** to start the session.
+
+```dart
+final class AuthBloc {
+  AuthBloc(this.sessionManager) {
+    /// listen to the session status
+    sessionManager.sessionStatus.listen((status) {
+      if (status == SessionStatus.expired) {
+        // handle session expiration
+      }
+    });
+  }
+}
+```
 
 ### Handling Token Expiration
 The JWTHeroInterceptor automatically handles token expiration and refresh. If a request fails with a 401 status code, the interceptor will attempt to refresh the token and retry the request.

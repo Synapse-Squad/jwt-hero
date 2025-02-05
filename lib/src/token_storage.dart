@@ -3,7 +3,7 @@ import 'jwt_token.dart';
 /// {@template token_storage}
 /// The interface for token storage.
 ///
-/// This interface is used by the [AuthInterceptor]
+/// This interface is used by the JwtHeroInterceptor
 /// to store and retrieve the Auth token pair.
 /// {@endtemplate}
 abstract interface class TokenStorage {

@@ -11,11 +11,12 @@ import 'package:dio/dio.dart';
 /// The mixin is intended to be used with classes that manage HTTP requests
 /// and need to handle automatic retries with refreshed JWT tokens.
 /// {@endtemplate}
-mixin RequestRetryMixin {
-  Future<Response<R>> retry<R>({
+mixin RequestRetryMixin<R> {
+  /// Retries the request with the new JWT token.
+  Future<Response<R>> retry({
     required Dio retryClient,
     required RequestOptions requestOptions,
-    required Future<Map<String, dynamic>> Function() buildHeaders,
+    required Future<Map<String, String>> Function() buildHeaders,
   }) async {
     return retryClient.request<R>(
       requestOptions.path,

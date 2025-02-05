@@ -17,6 +17,7 @@ import 'revoke_token_exception.dart';
 /// and need to handle JWT token expiration and refresh automatically.
 /// {@endtemplate}
 mixin JwtRefresherMixin {
+  /// Refreshes the JWT token using the provided [onRefresh] function.
   Future<JwtToken> refresh({
     required RequestOptions options,
     JwtToken? currentJwtToken,

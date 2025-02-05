@@ -1,7 +1,10 @@
 name: jwt_hero
 description: "JWT Hero is a Flutter package that helps you to manage JWT tokens in your Flutter app."
-version: 0.3.0
+version: 0.3.1
 homepage: https://github.com/Synapse-Squad/jwt-hero
+platforms:
+    android:
+    ios:
 
 environment:
   sdk: ^3.6.0
@@ -20,10 +23,6 @@ dev_dependencies:
   # flutter_lints: ^5.0.0
   kanza_lints: ^1.0.3
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
 
   # To add assets to your package, add an assets section, like this:

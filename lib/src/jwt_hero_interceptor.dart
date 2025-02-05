@@ -5,8 +5,21 @@ import 'jwt_refresher_mixin.dart';
 import 'refresh_typedef.dart';
 import 'request_retry_mixin.dart';
 import 'revoke_token_exception.dart';
-import 'session_expiration_manager.dart';
 import 'token_validator_ext.dart';
+
+/// Intercepts HTTP requests to handle JWT token management.
+///
+/// This interceptor is responsible for adding JWT tokens to request headers,
+/// refreshing expired tokens, and retrying requests with new tokens if needed.
+/// It uses the provided token storage to load and validate tokens, and the
+/// session manager to handle session expiration.
+///
+/// The interceptor also initializes separate clients for refreshing tokens
+/// and retrying requests.
+///
+/// Mixins:
+/// - [JwtRefresherMixin]: Provides functionality to refresh JWT tokens.
+/// - [RequestRetryMixin]: Provides functionality to retry requests.
 
 class JwtHeroInterceptor extends QueuedInterceptor
     with JwtRefresherMixin, RequestRetryMixin {
@@ -17,35 +30,58 @@ class JwtHeroInterceptor extends QueuedInterceptor
     required this.sessionManager,
   }) {
     refreshClient = Dio();
+
     refreshClient.options = BaseOptions(baseUrl: baseClient.options.baseUrl);
 
     retryClient = Dio();
+
     retryClient.options = BaseOptions(baseUrl: baseClient.options.baseUrl);
   }
 
+  /// The storage to load and save the JWT token.
   final TokenStorage tokenStorage;
+
+  /// The base client to make requests.
   final Dio baseClient;
+
+  /// The client to make requests to refresh the JWT token.
   late final Dio refreshClient;
+
+  /// The client to retry the request after refreshing the JWT token.
   late final Dio retryClient;
+
+  /// The function to refresh the JWT token.
   final Refresh onRefresh;
+
+  /// The session manager to expire the session.
   final SessionExpirationManager sessionManager;
 
+  /// Adds JWT token to request headers if valid and refreshes it if needed 
+  /// before making the request.
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
     try {
+      /// Load the JWT token from the storage.
       final jwtToken = await tokenStorage.loadToken();
 
+      /// If the JWT token is null, continue with the request.
       if (jwtToken == null) {
         return handler.next(options);
       }
 
+      /// If the JWT token is valid, add it to the request headers and continue
+      /// with the request.
       if (jwtToken.isValid) {
         options.headers.addAll(await _buildHeaders());
         return handler.next(options);
-      } else {
+      }
+
+      /// If the JWT token is not valid, refresh it and add it to the request
+      /// headers.
+      else {
         await refresh(
           options: options,
           currentJwtToken: jwtToken,
@@ -71,26 +107,35 @@ class JwtHeroInterceptor extends QueuedInterceptor
     }
   }
 
+  /// Handles JWT token errors and attempts to refresh the token before retrying
+  /// the request.
+
   @override
-  void onError(
+  Future<void> onError(
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    /// If the error is a RevokeTokenException, expire the session and reject
+    /// the request.
     if (err is RevokeTokenException) {
       sessionManager.expireSession();
       return handler.reject(err);
     }
 
+    /// If the response status code is not 401, continue with the error.
     if (!shouldRefresh(err.response)) {
       return handler.next(err);
     }
 
+    /// Load the JWT token from the storage.
     final jwtToken = await tokenStorage.loadToken();
 
+    /// If the JWT token is null, reject the request.
     if (jwtToken == null) {
       return handler.reject(err);
     }
 
+    /// If the JWT token is valid, retry the request.
     try {
       if (jwtToken.isValid) {
         final previousRequest = await retry(
@@ -100,7 +145,10 @@ class JwtHeroInterceptor extends QueuedInterceptor
         );
 
         return handler.resolve(previousRequest);
-      } else {
+      }
+
+      /// If the JWT token is not valid, refresh it and retry the request.
+      else {
         await refresh(
           options: err.requestOptions,
           currentJwtToken: jwtToken,
@@ -109,11 +157,13 @@ class JwtHeroInterceptor extends QueuedInterceptor
           onRefresh: onRefresh,
         );
 
+        /// Retry the request.
         final previousRequest = await retry(
           retryClient: retryClient,
           requestOptions: err.requestOptions,
           buildHeaders: _buildHeaders,
         );
+
         return handler.resolve(previousRequest);
       }
     } on RevokeTokenException {
@@ -124,6 +174,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
     }
   }
 
+  /// Builds the headers with the JWT token.
   Future<Map<String, dynamic>> _buildHeaders() async {
     final jwtToken = await tokenStorage.loadToken();
 
@@ -132,5 +183,6 @@ class JwtHeroInterceptor extends QueuedInterceptor
     };
   }
 
+  /// Checks if the response should be refreshed.
   bool shouldRefresh<R>(Response<R>? response) => response?.statusCode == 401;
 }

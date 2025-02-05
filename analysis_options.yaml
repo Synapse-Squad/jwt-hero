@@ -1,4 +1,9 @@
-include: package:flutter_lints/flutter.yaml
+# include: package:flutter_lints/flutter.yaml
+include: package:kanza_lints/analysis_options.yaml
+
+analyzer:
+  errors:
+    public_member_api_docs: ignore
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

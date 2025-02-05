@@ -27,65 +27,69 @@ Here is a complete example of how to set up and use **JwtHeroInterceptor**.
 As a first step, you need to implement the **TokenStorage** interface:
 
 ```dart
-const _accessToken = 'accessToken';
-const _refreshToken = 'refreshToken';
+enum _TokenKey {
+  accessToken('accessToken'),
+  refreshToken('refreshToken');
+
+  const _TokenKey(this.key);
+
+  final String key;
+}
 
 final class SecureTokenStorage implements TokenStorage {
-  SecureTokenStorage(this.secureStorage);
+  const SecureTokenStorage(this.secureStorage);
 
   final FlutterSecureStorage secureStorage;
-  final _controller = StreamController<JwtToken?>.broadcast();
 
   @override
   Future<JwtToken?> loadToken() async {
-    final accessToken = await secureStorage.read(key: _accessToken);
-    final refreshToken = await secureStorage.read(key: _refreshToken);
+    final accessToken = await secureStorage.read(
+      key: _TokenKey.accessToken.key,
+    );
+    final refreshToken = await secureStorage.read(
+      key: _TokenKey.refreshToken.key,
+    );
 
     if (accessToken != null && refreshToken != null) {
       return JwtToken(
-        accessToken: accessToken, 
+        accessToken: accessToken,
         refreshToken: refreshToken,
       );
     }
-    
+
     return null;
   }
-
 
   @override
   Future<void> saveToken(JwtToken jwtToken) async {
     await secureStorage.write(
-      key: _accessToken, 
+      key: _TokenKey.accessToken.key,
       value: jwtToken.accessToken,
     );
-    
+
     await secureStorage.write(
-        key: _refreshToken, 
-        value: jwtToken.refreshToken,
+      key: _TokenKey.refreshToken.key,
+      value: jwtToken.refreshToken,
     );
-    
-    _controller.add(jwtToken);
   }
 
   @override
-  Future<void> clearToken() async {
-    await secureStorage.delete(key: _accessToken);
-    await secureStorage.delete(key: _refreshToken);
+  Future<void> clear() async {
+    await secureStorage.delete(key: _TokenKey.accessToken.key);
+    await secureStorage.delete(key: _TokenKey.refreshToken.key);
   }
 
   @override
-  Future<void> close() => _controller.close();
+  Future<String?> get accessToken =>
+      secureStorage.read(key: _TokenKey.accessToken.key);
 
   @override
-  Stream<TokenPair?> getTokenStream() => _controller.stream;
-
-  @override
-  Future<String?> get accessToken => secureStorage.read(key: _accessToken);
-
-  @override
-  Future<String?> get refreshToken => secureStorage.read(key: _refreshToken);
+  Future<String?> get refreshToken =>
+      secureStorage.read(key: _TokenKey.refreshToken.key);
 }
 ```
+
+> **Note:** In by default, package has its own **TokenStorage** implementation.
 
 Next, you need to provide a callback to handle token refresh logic and
 create an instance of **JwtHeroInterceptor**:
@@ -95,7 +99,7 @@ create an instance of **JwtHeroInterceptor**:
 
   dio.interceptors.add(
     JwtHeroInterceptor(
-      tokenStorage: SecureTokenStorage(),
+      tokenStorage: SecureTokenStorage(), // optional 
       baseClient: dio,
       onRefresh: (refreshClient, refreshToken) async {
         refreshClient.options = refreshClient.options.copyWith(
@@ -116,7 +120,7 @@ create an instance of **JwtHeroInterceptor**:
 
 ### SessionManager
 
-You can inject **SessionExpirationManager** to your classes using Dependency Injection (DI) 
+You can inject **SessionManager** to your classes using Dependency Injection (DI) 
 to listen **sessionStatus**. And if user login/register successfully, we should call 
 **sessionManager.startSession()** to start the session.
 

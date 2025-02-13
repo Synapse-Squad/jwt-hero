@@ -21,9 +21,10 @@ mixin RequestRetryMixin<R> {
     return retryClient.request<R>(
       requestOptions.path,
       cancelToken: requestOptions.cancelToken,
-      data: requestOptions.data is FormData
-          ? (requestOptions.data as FormData).clone()
-          : requestOptions.data,
+      data:
+          requestOptions.data is FormData
+              ? (requestOptions.data as FormData).clone()
+              : requestOptions.data,
       onReceiveProgress: requestOptions.onReceiveProgress,
       onSendProgress: requestOptions.onSendProgress,
       queryParameters: requestOptions.queryParameters,

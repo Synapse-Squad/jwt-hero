@@ -24,18 +24,11 @@ final class SecureTokenStorage implements TokenStorage {
 
   @override
   Future<JwtToken?> loadToken() async {
-    final accessToken = await secureStorage.read(
-      key: _TokenKey.accessToken.key,
-    );
-    final refreshToken = await secureStorage.read(
-      key: _TokenKey.refreshToken.key,
-    );
+    final accessToken = await secureStorage.read(key: _TokenKey.accessToken.key);
+    final refreshToken = await secureStorage.read(key: _TokenKey.refreshToken.key);
 
     if (accessToken != null && refreshToken != null) {
-      return JwtToken(
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      );
+      return JwtToken(accessToken: accessToken, refreshToken: refreshToken);
     }
 
     return null;
@@ -43,15 +36,9 @@ final class SecureTokenStorage implements TokenStorage {
 
   @override
   Future<void> saveToken(JwtToken jwtToken) async {
-    await secureStorage.write(
-      key: _TokenKey.accessToken.key,
-      value: jwtToken.accessToken,
-    );
+    await secureStorage.write(key: _TokenKey.accessToken.key, value: jwtToken.accessToken);
 
-    await secureStorage.write(
-      key: _TokenKey.refreshToken.key,
-      value: jwtToken.refreshToken,
-    );
+    await secureStorage.write(key: _TokenKey.refreshToken.key, value: jwtToken.refreshToken);
   }
 
   @override
@@ -61,10 +48,8 @@ final class SecureTokenStorage implements TokenStorage {
   }
 
   @override
-  Future<String?> get accessToken =>
-      secureStorage.read(key: _TokenKey.accessToken.key);
+  Future<String?> get accessToken => secureStorage.read(key: _TokenKey.accessToken.key);
 
   @override
-  Future<String?> get refreshToken =>
-      secureStorage.read(key: _TokenKey.refreshToken.key);
+  Future<String?> get refreshToken => secureStorage.read(key: _TokenKey.refreshToken.key);
 }

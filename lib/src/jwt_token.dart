@@ -3,10 +3,7 @@
 /// {@endtemplate}
 final class JwtToken {
   /// {@macro jwt_token}
-  JwtToken({
-    required this.accessToken,
-    required this.refreshToken,
-  });
+  JwtToken({required this.accessToken, required this.refreshToken});
 
   /// The access token.
   final String accessToken;

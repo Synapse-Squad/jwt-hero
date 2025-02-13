@@ -60,10 +60,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
   final SessionManager sessionManager;
 
   @override
-  Future<void> onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     try {
       /// Load the JWT token from the storage.
       final jwtToken = await tokenStorage.loadToken();
@@ -97,10 +94,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
       /// This is to prevent an infinite loop of refreshing the token.
       /// The request will be retried in the onError method.
       if (error.response != null && error.response!.statusCode == 401) {
-        return handler.reject(
-          RevokeTokenException(requestOptions: options),
-          true,
-        );
+        return handler.reject(RevokeTokenException(requestOptions: options), true);
       }
 
       return handler.reject(error);
@@ -113,10 +107,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
   }
 
   @override
-  Future<void> onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
     /// If the error is a RevokeTokenException, expire the session and reject
     /// the request.
     if (err is RevokeTokenException) {
@@ -178,9 +169,7 @@ class JwtHeroInterceptor extends QueuedInterceptor
   Future<Map<String, String>> _buildHeaders() async {
     final jwtToken = await tokenStorage.loadToken();
 
-    return {
-      'Authorization': 'Bearer ${jwtToken!.accessToken}',
-    };
+    return {'Authorization': 'Bearer ${jwtToken!.accessToken}'};
   }
 
   /// Checks if the response should be refreshed.

@@ -1,3 +1,5 @@
 # include: package:flutter_lints/flutter.yaml
 include: package:kanza_lints/analysis_options.yaml
 
+formatter:
+  page_width: 100

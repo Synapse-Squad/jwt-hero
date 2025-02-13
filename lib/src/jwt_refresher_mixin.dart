@@ -30,10 +30,7 @@ mixin JwtRefresherMixin {
     }
 
     try {
-      final newJwtToken = await onRefresh(
-        refreshClient,
-        currentJwtToken.refreshToken,
-      );
+      final newJwtToken = await onRefresh(refreshClient, currentJwtToken.refreshToken);
 
       await tokenStorage.saveToken(newJwtToken);
       return newJwtToken;

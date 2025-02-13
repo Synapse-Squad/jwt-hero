@@ -1,5 +1,7 @@
 # JWT Hero
 
+![Static Badge](https://img.shields.io/badge/style-kanza%20lints-347AF6)
+
 JWT Hero is a Dart package that provides an easy way to handle JWT token management, including token validation, refresh, and retrying failed requests. This package is designed to work seamlessly with the Dio HTTP client.
 
 ## Setting Up

@@ -1,3 +1,7 @@
+## 0.3.4
+
+* fix: JwtToken object exported from the package †o use
+
 ## 0.3.3
 
 * fix: Default SecureTokenManager exported from package

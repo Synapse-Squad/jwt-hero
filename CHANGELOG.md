@@ -1,3 +1,7 @@
+## 0.3.3
+
+* fix: Default SecureTokenManager exported from package
+
 ## 0.3.1
 
 * docs: minor fixes in README.md

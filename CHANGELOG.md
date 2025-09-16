@@ -1,3 +1,8 @@
+## 0.3.5
+
+* fix: folder structure of package changed
+* fix: version of dependent packages upgraded
+
 ## 0.3.4
 
 * fix: JwtToken object exported from the package †o use

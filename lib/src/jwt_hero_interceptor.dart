@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'jwt_refresher_mixin.dart';
-import 'refresh_typedef.dart';
-import 'request_retry_mixin.dart';
-import 'revoke_token_exception.dart';
 import 'secure_token_storage.dart';
 import 'session_manager.dart';
 import 'token_storage.dart';
-import 'token_validator_ext.dart';
+import 'utils/extensions/token_validator_ext.dart';
+import 'utils/mixins/jwt_refresher_mixin.dart';
+import 'utils/mixins/request_retry_mixin.dart';
+import 'utils/refresh_typedef.dart';
+import 'utils/revoke_token_exception.dart';
 
 /// {@template jwt_hero_interceptor}
 /// Intercepts HTTP requests to handle JWT token management.

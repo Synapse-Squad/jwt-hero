@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 
-import '../jwt_hero.dart';
-import 'jwt_token.dart';
-import 'refresh_typedef.dart';
-import 'revoke_token_exception.dart';
+import '../../jwt_token.dart';
+import '../../token_storage.dart';
+import '../refresh_typedef.dart';
+import '../revoke_token_exception.dart';
 
 /// {@template jwt_refresher_mixin}
 /// A mixin responsible for refreshing JWT tokens.

@@ -1,6 +1,6 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-import 'jwt_token.dart';
+import '../../jwt_token.dart';
 
 /// Extension methods for the [JwtToken] class.
 extension TokenValidatorExt on JwtToken {
